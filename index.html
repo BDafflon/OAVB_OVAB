@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P5.js Sketch</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <!-- Add Leaflet CSS and JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #f0f0f0;
+        }
+        #map {
+            width: 800px;
+            height: 600px;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <div id="distance-info" style="position: fixed; top: 20px; right: 20px; background: white; padding: 10px; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
+        <div id="ovba-distance"></div>
+        <div id="obab-distance"></div>
+        <div id="distance-diff"></div>
+        <div style="margin-top: 10px;">
+            <label for="multiplier">Multiplier: <span id="multiplier-value">1</span></label>
+            <input type="range" id="multiplier" min="1" max="5" step="0.1" value="1" style="width: 100%;">
+        </div>
+    </div>
+    <script src="src/sketch.js"></script>
+</body>
+</html>
