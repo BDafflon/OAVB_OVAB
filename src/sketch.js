@@ -46,11 +46,10 @@ function setup() {
       await updateRoutes();
     });
 
-    marker.on('drag',async function(e) {
+    marker.on('drag', async function(e) {
       const position = e.target.getLatLng();
       points[index] = [position.lng, position.lat];
-      await updateRoutes();
-      updatePolyline();
+      updateRoutes();
     });
 
     markers.push(marker);
@@ -76,9 +75,9 @@ async function updateRoutes() {
     ];
 
     let ovbaRoute = [];
-    let oavbRoute = [];
+    let obabRoute = [];
     let ovbaDistance = 0;
-    let oavbDistance = 0;
+    let obabDistance = 0;
 
     const routes = await Promise.all(routePairs.map(async ([start, end]) => {
       const response = await fetch(
@@ -96,11 +95,11 @@ async function updateRoutes() {
 
     // Calculate total distances
     ovbaDistance = routes.slice(0, 3).reduce((sum, r) => sum + r.distance, 0);
-    oavbDistance = routes.slice(3).reduce((sum, r) => sum + r.distance, 0);
+    obabDistance = routes.slice(3).reduce((sum, r) => sum + r.distance, 0);
 
     // Separate routes into OVBA and OBAB paths
     ovbaRoute = routes.slice(0, 3).map(r => r.coordinates).flat();
-    oavbRoute = routes.slice(3).map(r => r.coordinates).flat();
+    obabRoute = routes.slice(3).map(r => r.coordinates).flat();
 
     // Create or update polylines for both routes
     if (!polylines) {
@@ -109,7 +108,7 @@ async function updateRoutes() {
           color: '#2196F3',
           weight: 3
         }).addTo(map),
-        oavb: L.polyline(oavbRoute.map(([lng, lat]) => [lat, lng]), {
+        obab: L.polyline(obabRoute.map(([lng, lat]) => [lat, lng]), {
           color: '#f44336',
           weight: 3,
           dashArray: '10, 10'
@@ -118,25 +117,25 @@ async function updateRoutes() {
       
       // Initial tooltips
       polylines.ovba.bindTooltip('', { permanent: true, direction: 'right' });
-      polylines.oavb.bindTooltip('', { permanent: true, direction: 'left' });
+      polylines.obab.bindTooltip('', { permanent: true, direction: 'left' });
     } else {
       polylines.ovba.setLatLngs(ovbaRoute.map(([lng, lat]) => [lat, lng]));
-      polylines.oavb.setLatLngs(oavbRoute.map(([lng, lat]) => [lat, lng]));
+      polylines.obab.setLatLngs(obabRoute.map(([lng, lat]) => [lat, lng]));
     }
 
     // Update distances display
     const ovbaKm = (ovbaDistance/1000 ).toFixed(2);
-    const oavbKm = (oavbDistance/1000 ).toFixed(2);
-    const difference = ((oavbDistance - (multiplier * ovbaDistance))/1000).toFixed(2);
+    const obabKm = (obabDistance/1000 ).toFixed(2);
+    const difference = ((obabDistance - (multiplier * ovbaDistance))/1000).toFixed(2);
     const differenceText = difference > 0 ? `+${difference}` : difference;
 
     document.getElementById('ovba-distance').textContent = `OVBA Distance: ${ovbaKm} km`;
-    document.getElementById('oavb-distance').textContent = `OBAB Distance: ${oavbKm} km`;
+    document.getElementById('obab-distance').textContent = `OBAB Distance: ${obabKm} km`;
     document.getElementById('distance-diff').textContent = `OVAB - OVBA = ${differenceText} km`;
 
     // Update tooltip contents (keep these simpler now)
     polylines.ovba.setTooltipContent(`OVBA: ${ovbaKm} km`);
-    polylines.oavb.setTooltipContent(`OAVB: ${oavbKm} km`);
+    polylines.obab.setTooltipContent(`OAVB: ${obabKm} km`);
 
   } catch (error) {
     console.error('Error calculating routes:', error);
